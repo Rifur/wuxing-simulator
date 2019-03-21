@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>五行相生相剋動態</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="vendor/morrisjs/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <script src="js/vue.js"></script>
+
+    <script type="text/javascript" src="js/String.js"></script>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style type="text/css">
+        .form-control[readonly] { background-color: #fff;  }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">五行相生相剋動態 v0.1
+                    <i  id="Warning-Msg" class="fa fa fa-warning" style="color: red; display: none;" onMouseOver="javascript:ShowWarning();"></i></a>
+            </div>
+            <!-- /.navbar-header -->
+        </nav>
+        </nav>
+
+        <div id="page-wrapper">
+             <div class="row">
+                <div class="col-lg-12">
+                    <h2>五行相生相剋動態</h2>
+                    <h3 id="five_day">第 0 天</h3>
+                    <label>金<input type="range" min="0" max="100" value="50" class="slider" id="five_Mt"></label>
+                    <label>木<input type="range" min="0" max="100" value="50" class="slider" id="five_Wd"></label>
+                    <label>水<input type="range" min="0" max="100" value="50" class="slider" id="five_Wt"></label>
+                    <label>火<input type="range" min="0" max="100" value="50" class="slider" id="five_Fr"></label>
+                    <label>土<input type="range" min="0" max="100" value="50" class="slider" id="five_Er"></label>
+                    <button onclick="range_change()">執行</button>
+                    <div>
+                        <div id="five_result_Mt">金：50%</div>
+                        <div id="five_result_Wd">木：50%</div>
+                        <div id="five_result_Wt">水：50%</div>
+                        <div id="five_result_Fr">火：50%</div>
+                        <div id="five_result_Er">土：50%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="vendor/raphael/raphael.min.js"></script>
+    <script src="vendor/morrisjs/morris.min.js"></script>
+    <script src="data/morris-data.js"></script>
+
+    <!-- Flot Charts JavaScript -->
+    <script src="vendor/flot/excanvas.min.js"></script>
+    <script src="vendor/flot/jquery.flot.js"></script>
+    <script src="vendor/flot/jquery.flot.pie.js"></script>
+    <script src="vendor/flot/jquery.flot.resize.js"></script>
+    <script src="vendor/flot/jquery.flot.time.js"></script>
+    <script src="vendor/flot-tooltip/jquery.flot.tooltip.min.js"></script>
+
+    <!-- DatetimePicker JavaScript -->
+    <script type="text/javascript" src="vendor/moment/min/moment.min.js"></script>
+    <script type="text/javascript" src="vendor/moment/min/locales.min.js"></script>
+    <script type="text/javascript" src="vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet" href="vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+
+
+    <!-- Custom Theme JavaScript -->
+    <script src="dist/js/sb-admin-2.js"></script>
+    <script src="vendor/moment/min/moment-with-locales.min.js"></script>
+   
+    <script type="text/javascript">
+        var five = range_initial();
+        var five_day = 0;
+
+        function range_initial() {
+            return [50, 50, 50, 50, 50];
+        }
+
+        function range_change() {
+            var mt = $('#five_Mt').val() / 10000.0;
+            var wd = $('#five_Wd').val() / 10000.0;
+            var wt = $('#five_Wt').val() / 10000.0;
+            var fr = $('#five_Fr').val() / 10000.0;
+            var er = $('#five_Er').val() / 10000.0;
+            
+            var args = [mt, wd, wt, fr, er];
+            var tmp = [0, 0, 0, 0, 0];
+            var ori = five.slice();
+            for(var i=0; i<10; ++i) {
+                tmp[0] = five[0] + five[4]*args[4] - five[3]*args[3];
+                tmp[1] = five[1] + five[2]*args[2] - five[0]*args[0];
+                tmp[2] = five[2] + five[0]*args[0] - five[4]*args[4];
+                tmp[3] = five[3] + five[1]*args[1] - five[2]*args[2];
+                tmp[4] = five[4] + five[3]*args[3] - five[1]*args[1];
+                tmp = tmp.map((x) => { if(x>100.0) return 100.0; else if(x<0.0) return 0.0; else return x; })
+                five = tmp.slice();
+
+                console.log(str_replace('金：?% 木：?% 水：?% 火：?% 土：?%', tmp.map((x) => { return x.toFixed(2); })));
+
+                five_day += 1;
+                $('#five_day').html(str_replace('? 年 ? 月 ? 日', 
+                    [Math.floor(five_day/30/12), Math.floor(five_day/30%12+1), (five_day%30+1).toFixed(0)]));
+            }
+
+            tmp = tmp.map((x) => { 
+                return str_replace('<span style="color:?">?%</span>', [x>60?'red':x<40?'blue':'black', x.toFixed(2)]); });
+            ori = ori.map((x) => { 
+                return str_replace('<span style="color:?">?%</span>', [x>60?'red':x<40?'blue':'black', x.toFixed(2)]); });
+
+            $('#five_result_Mt').html('金：' + ori[0] + '→' + tmp[0]);
+            $('#five_result_Wd').html('木：' + ori[1] + '→' + tmp[1]);
+            $('#five_result_Wt').html('水：' + ori[2] + '→' + tmp[2]);
+            $('#five_result_Fr').html('火：' + ori[3] + '→' + tmp[3]);
+            $('#five_result_Er').html('土：' + ori[4] + '→' + tmp[4]);
+
+            
+        }
+
+        function str_replace(str, args) {
+            for(var i=0; i<args.length; ++i) {
+                str = str.replace(/\?/i, args[i]);
+            }
+            return str;
+        }
+    </script>
+
+</body>
+
+</html>
